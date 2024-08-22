@@ -53,9 +53,12 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain ) {
+        // 拿到请求、响应对象
+        ServerHttpRequest request = exchange.getRequest();
+        ServerHttpResponse response = exchange.getResponse();
+
         // 0. 用户发送请求到 API网关
         // 1. 请求日志
-        ServerHttpRequest request = exchange.getRequest();
         String method = request.getMethod().toString();
         String path = INTERFACE_HOST + request.getPath().value();
         log.info("请求唯一标识：" + request.getId());
@@ -65,8 +68,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String sourceAddress = request.getLocalAddress().getHostString();
         log.info("请求来源地址：" + sourceAddress);
         log.info("请求来源地址：" + request.getRemoteAddress());
-        // 拿到响应对象
-        ServerHttpResponse response = exchange.getResponse();
+
         // 2. 访问控制 - 黑白名单 // todo 暂时不做测试一下，留到最后阶段使用数据库+redis实现
 //        if (!IP_WHITE_LIST.contains(sourceAddress)) {
 //            // 设置响应状态码为403 Forbidden（禁止访问）
@@ -81,6 +83,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         String nonce = headers.getFirst("nonce");
         String timestamp = headers.getFirst("timestamp");
         String sign = headers.getFirst("sign");
+        String interfaceId = headers.getFirst("interfaceId");
         String body = URLDecoder.decode(Objects.requireNonNull(headers.getFirst("body")), StandardCharsets.UTF_8);
 
         // 实际情况应该是去数据库中查是否已分配给用户
@@ -129,7 +132,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 初始化一个 InterfaceInfo 对象，用于存储查询结果
         InterfaceInfo interfaceInfo = null;
         try {
-            interfaceInfo =  innerInterfaceInfoService.getInterfaceInfo(path,method);
+            interfaceInfo =  innerInterfaceInfoService.getInterfaceInfo(interfaceId);
         } catch (Exception e){
             log.error("getInterfaceInfo error",e);
         }

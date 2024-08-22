@@ -4,7 +4,8 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
-import com.such.apiclientsdk.model.User;
+import com.such.apiclientsdk.constants.ErrorCode;
+import com.such.apiclientsdk.model.Api;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -29,54 +30,33 @@ public class SuchApiClient {
     }
 
     /**
-     * 使用GET方法从服务器获取名称信息
-     *
-     * @param url     URL
-     * @param request 请求参数
-     * @return result
+     * 通用返回结果
+     * @param api api对象
+     * @return 返回结果
      */
-    public String invokeMethodUsingGet(String url, String request) {
-        // 获取路径部分
-        String path = getPathFromUrl(url);
-        // 使用HttpUtil工具发起GET请求，并获取服务器返回的结果
-        HttpResponse httpResponse = HttpRequest
-                .get(GATEWAY_HOST + path + "?request=" + request)
-                .addHeaders(getHeadeMap(request))
-                .execute();
-        System.out.println(httpResponse.getStatus());
-        String result = httpResponse.body();
-        // 打印服务器返回的结果
-        System.out.println(result);
-        // 返回服务器返回到结果
-        return result;
-    }
-
-    /**
-     * 使用POST方法向服务器发送User对象，并获取服务器返回到结果
-     *
-     * @param url  URL
-     * @param user JSON对象
-     * @return result
-     */
-    public String invokeMethodUsingPost(String url, User user) {
-        // 获取路径部分
-        String path = getPathFromUrl(url);
-        // 将User对象转换为JSON字符串
-        String json = JSONUtil.toJsonStr(user);
-        // 使用HttpUtil工具发起POST请求，并获取服务器返回的响应
-        HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + path)
-                .addHeaders(getHeadeMap(json)) // 添加前面构造的请求头
-                .body(json) // 将JSON字符串设置为请求体
-                .execute(); // 执行请求
-
-        // 打印服务器返回的状态码
-        System.out.println(httpResponse.getStatus());
-        // 获取服务器返回到结果
-        String result = httpResponse.body();
-        // 打印服务器返回的结果
-        System.out.println(result);
-        // 返回服务器返回到结果
-        return result;
+    public String getResult(Api api) {
+        String json = JSONUtil.toJsonStr(api.getBody());
+        if (json == null) {
+            json = ErrorCode.NULL_JSON;
+        }
+        String pathFromUrl = this.getPathFromUrl(api.getUrl());
+        if ("get".equals(api.getMethod()) || "GET".equals(api.getMethod())) {
+            HttpResponse httpResponse = HttpRequest
+                    .get(GATEWAY_HOST + pathFromUrl)
+                    .header("Accept", "application/json;charset=utf-8")
+                    .addHeaders(getHeadeMap(json, api.getInterfaceId(),api.getUrl()))
+                    .execute();
+            return httpResponse.body();
+        }
+        if (api.getMethod().equals("post") || api.getMethod().equals("POST")) {
+            HttpResponse httpResponse = HttpRequest.post(GATEWAY_HOST + pathFromUrl)
+                    .header("Accept", "application/json;charset=utf-8")
+                    .addHeaders(getHeadeMap(json,api.getInterfaceId(),api.getUrl()))
+                    .body(json)
+                    .execute();
+            return httpResponse.body();
+        }
+        else return null;
     }
 
     /**
@@ -101,10 +81,10 @@ public class SuchApiClient {
     /**
      * 创建一个私有方法，用于构造请求头(accessKey、随机数、请求内容、时间戳、签名密钥)
      *
-     * @param body
+     * @param body 请求内容
      * @return
      */
-    private Map<String, String> getHeadeMap(String body) {
+    private Map<String, String> getHeadeMap(String body,String interfaceId,String url) {
         // 创建一个新的 HashMap 对象
         Map<String, String> hashmap = new HashMap<>();
         // 将 "accessKey" 和其对应的值放入 map 中
@@ -122,6 +102,8 @@ public class SuchApiClient {
         hashmap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000)); // 参数4 时间戳
         hashmap.put("sign", genSign(body, secretKey)); // 参数5 签名密钥
         // 返回构造的请求头
+        hashmap.put("interfaceId", interfaceId); // 参数6 接口ID
+        hashmap.put("url", url); // 参数7 接口ID
         return hashmap;
     }
 }

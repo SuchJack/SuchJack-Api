@@ -11,11 +11,10 @@ import com.such.apicommon.model.entity.InterfaceInfo;
 public interface InnerInterfaceInfoService {
 
     /**
-     * 从数据库中查询模拟接口是否存在(请求路径、请求方法、请求参数)
-     * @param url
-     * @param method
+     * 从数据库中查询模拟接口是否存在(接口id)
+     * @param interfaceId
      * @return
      */
-    InterfaceInfo getInterfaceInfo(String url,String method);
+    InterfaceInfo getInterfaceInfo(String interfaceId);
 
 }

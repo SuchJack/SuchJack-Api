@@ -1,6 +1,5 @@
 package com.such.apiinterface.controller;
 
-import com.such.apiclientsdk.model.User;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ public class NameController {
         if (request.equals("isEmpty")){
             return "你的请求参数为空";
         }
-        return "GET 你的名字是你好" + request;
+        return "测试调用结果：" + request;
     }
 
     @PostMapping("/post")
@@ -26,11 +25,11 @@ public class NameController {
     }
 
     @PostMapping("/user")
-    public String getUserNameByPost(@RequestBody User user, HttpServletRequest request) {
-        if (user == null) {
+    public String getUserNameByPost(@RequestBody String body, HttpServletRequest request) {
+        if (body == null) {
             return "参数不能为空";
         }
-        String result = "POST 你的名字是" + user.getUsername();
+        String result = "POST 你的名字是" + body;
         return result;
     }
 

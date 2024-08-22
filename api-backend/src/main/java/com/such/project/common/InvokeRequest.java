@@ -23,5 +23,10 @@ public class InvokeRequest {
     /**
      * 用户请求参数
      */
-    private String userRequestParams = "isEmpty";
+    private String userRequestParams;
+
+    /**
+     * 请求地址
+     */
+    private String url;
 }
