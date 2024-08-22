@@ -1,0 +1,28 @@
+server:
+  port: 8090
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - AddResponseHeader=source, jack
+      routes:
+        - id: api_route
+          uri: http://localhost:8123
+          predicates:
+            - Path=/api/**
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+dubbo:
+  application:
+    name: api-gateway
+    logger: slf4j
+    qos-enable: false
+  protocol:
+    name: tri
+    port: 50052
+  registry:
+    address: nacos://${nacos.address:127.0.0.1}:8848
