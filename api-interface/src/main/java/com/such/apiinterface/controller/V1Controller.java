@@ -18,7 +18,6 @@ public class V1Controller {
         String header = request.getHeader("url");
         System.out.println("header = " + header);
         System.out.println("requestURI = " + requestURI);
-        nameController.getNameByPost("你好");
         return "Succeed connected to api-interface v1.";
     }
 

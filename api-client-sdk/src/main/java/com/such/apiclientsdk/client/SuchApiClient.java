@@ -40,7 +40,17 @@ public class SuchApiClient {
             json = ErrorCode.NULL_JSON;
         }
         String pathFromUrl = this.getPathFromUrl(api.getUrl());
-        if ("get".equals(api.getMethod()) || "GET".equals(api.getMethod())) {
+        // GET情况一：请求参数不为空
+        if (api.getBody()!=ErrorCode.NULL_JSON && "get".equals(api.getMethod()) || "GET".equals(api.getMethod())) {
+            HttpResponse httpResponse = HttpRequest
+                    .get(GATEWAY_HOST + pathFromUrl + "?request=" + api.getBody())
+                    .header("Accept", "application/json;charset=utf-8")
+                    .addHeaders(getHeadeMap(json, api.getInterfaceId(),api.getUrl()))
+                    .execute();
+            return httpResponse.body();
+        }
+        // GET情况二：请求参数为空
+        if (api.getBody().equals(ErrorCode.NULL_JSON) && "get".equals(api.getMethod()) || "GET".equals(api.getMethod())) {
             HttpResponse httpResponse = HttpRequest
                     .get(GATEWAY_HOST + pathFromUrl)
                     .header("Accept", "application/json;charset=utf-8")

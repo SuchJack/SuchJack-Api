@@ -1,8 +1,6 @@
 package com.such.apiinterface;
 
 import com.such.apiclientsdk.client.SuchApiClient;
-import com.such.apiclientsdk.model.User;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
