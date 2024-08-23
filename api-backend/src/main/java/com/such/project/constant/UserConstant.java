@@ -30,4 +30,13 @@ public interface UserConstant {
     String ADMIN_ROLE = "admin";
 
     // endregion
+    /**
+     * 用户默认密码
+     */
+    String USER_DEFAULT_PASSWORD = "12345678";
+
+    /**
+     * 盐值，混淆密码
+     */
+    String SALT = "such-jack-admin";
 }

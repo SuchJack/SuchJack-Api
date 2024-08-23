@@ -1,4 +1,5 @@
 package com.such.project.service.impl;
+import java.util.Date;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -54,7 +55,17 @@ public class UserInterfaceInfoServiceImpl extends ServiceImpl<UserInterfaceInfoM
         // leftNum = leftNum - 1 和 totalNum = totalNum + 1 。意思是将 leftNum 字段减一，totalNum字段加一。
         updateWrapper.setSql("leftNum = leftNum - 1,totalNum = totalNum + 1");
         // 最后，调用 update 方法执行更新操作，并返回更新是否成功的结果
-        return this.update(updateWrapper);
+        boolean result = this.update(updateWrapper);
+        if (result) {
+            return true;
+        } else {
+            UserInterfaceInfo userInterfaceInfo = new UserInterfaceInfo();
+            userInterfaceInfo.setUserId(userId);
+            userInterfaceInfo.setInterfaceInfoId(interfaceInfoId);
+            userInterfaceInfo.setTotalNum(1);
+            return this.save(userInterfaceInfo);
+        }
+//        return this.update(updateWrapper);
     }
 }
 

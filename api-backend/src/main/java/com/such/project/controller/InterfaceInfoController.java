@@ -259,8 +259,8 @@ public class InterfaceInfoController {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         // 2.判断该接口是否可以调用
-        com.such.apiclientsdk.model.User user = new com.such.apiclientsdk.model.User();
-        user.setUsername("test");
+//        com.such.apiclientsdk.model.User user = new com.such.apiclientsdk.model.User();
+//        user.setUsername("test");
         // todo 发布时要测试接口是否能调用
 //        String username = suchApiClient.getUserNameByPost(user);
 //        if (StringUtils.isBlank(username)){

@@ -1,5 +1,7 @@
 package com.such.project.controller;
 
+import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO;
@@ -8,18 +10,22 @@ import com.such.project.common.BaseResponse;
 import com.such.project.common.DeleteRequest;
 import com.such.project.common.ErrorCode;
 import com.such.project.common.ResultUtils;
+import com.such.project.constant.UserConstant;
 import com.such.project.exception.BusinessException;
 import com.such.project.model.dto.user.*;
 import com.such.project.model.vo.UserVO;
 import com.such.project.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.such.project.constant.UserConstant.SALT;
 
 /**
  * 用户接口
@@ -124,6 +130,13 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userAddRequest, user);
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userAddRequest.getUserPassword()).getBytes());
+        user.setUserPassword(encryptPassword);
+        // 3. 分配 accessKey, secretKey
+        String accessKey = DigestUtil.md5Hex(SALT + userAddRequest.getUserAccount() + RandomUtil.randomNumbers(5));
+        String secretKey = DigestUtil.md5Hex(SALT + userAddRequest.getUserAccount() + RandomUtil.randomNumbers(8));
+        user.setAccessKey(accessKey);
+        user.setSecretKey(secretKey);
         boolean result = userService.save(user);
         if (!result) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR);
@@ -161,6 +174,10 @@ public class UserController {
         }
         User user = new User();
         BeanUtils.copyProperties(userUpdateRequest, user);
+        if (StringUtils.isNotBlank(userUpdateRequest.getUserPassword())) {
+            String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userUpdateRequest.getUserPassword()).getBytes());
+            user.setUserPassword(encryptPassword);
+        }
         boolean result = userService.updateById(user);
         return ResultUtils.success(result);
     }

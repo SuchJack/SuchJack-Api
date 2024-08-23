@@ -17,8 +17,7 @@ import org.springframework.util.DigestUtils;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import static com.such.project.constant.UserConstant.ADMIN_ROLE;
-import static com.such.project.constant.UserConstant.USER_LOGIN_STATE;
+import static com.such.project.constant.UserConstant.*;
 
 
 /**
@@ -34,10 +33,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
-    /**
-     * 盐值，混淆密码
-     */
-    private static final String SALT = "such-jack-admin";
+
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
