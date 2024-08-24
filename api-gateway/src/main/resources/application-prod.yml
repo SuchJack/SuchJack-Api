@@ -10,6 +10,8 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/api/**
+  application:
+    name: gateway
 #        - id: add_request_header_route
 #          uri: http://localhost:8123
 #          predicates:
@@ -43,7 +45,7 @@ logging:
 #    address: nacos://localhost:8848
 dubbo:
   application:
-    name: dubbo-springboot-demo-consumer
+    name: api-gateway
     logger: slf4j
     qos-enable: false
   protocol:

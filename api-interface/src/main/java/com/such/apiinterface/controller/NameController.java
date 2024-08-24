@@ -3,6 +3,7 @@ package com.such.apiinterface.controller;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,7 +48,7 @@ public class NameController {
      */
     @PostMapping("/user")
     public String getUserNameByPost(@RequestBody(required = false) String body, HttpServletRequest request) {
-        if (body == null || body.equals("null")) {
+        if (StringUtils.isEmpty(body)) {
             return "请求参数不能为空";
         }
 //        String body2 = request.getHeader("body"); //  !%7B%22username%22%3A%22%E4%BD%A0%22%7D 乱码！

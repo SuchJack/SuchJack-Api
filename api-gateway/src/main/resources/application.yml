@@ -10,6 +10,8 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/**
+  application:
+    name: gateway
 logging:
   level:
     org:

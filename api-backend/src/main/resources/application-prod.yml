@@ -53,7 +53,7 @@ such:
 
 dubbo:
   application:
-    name: dubbo-springboot-demo-provider
+    name: api-backend
     logger: slf4j
 #    qos-port: 33333
     qos-enable: false
