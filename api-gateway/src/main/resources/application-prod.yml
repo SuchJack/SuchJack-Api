@@ -10,6 +10,8 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/api/**
+    nacos:
+      server-addr: 110.40.64.81:8848
   application:
     name: gateway
 #        - id: add_request_header_route
@@ -43,13 +45,12 @@ logging:
 #  registry:
 #    id: nacos-registry
 #    address: nacos://localhost:8848
+# dubbo 配置
 dubbo:
   application:
-    name: api-gateway
-    logger: slf4j
-    qos-enable: false
+    name: api-gateway-consumer
   protocol:
-    name: tri
-    port: 50052
+    name: dubbo
+    port: -1
   registry:
-    address: nacos://${nacos.address:117.72.79.165}:8848
+    address: nacos://110.40.64.81:8848

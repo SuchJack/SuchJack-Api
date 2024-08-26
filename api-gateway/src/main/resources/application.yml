@@ -10,6 +10,8 @@ spring:
           uri: http://localhost:8123
           predicates:
             - Path=/**
+    nacos:
+      server-addr: 110.40.64.81:8848
   application:
     name: gateway
 logging:
@@ -18,13 +20,12 @@ logging:
       springframework:
         cloud:
           gateway: trace
+# dubbo 配置
 dubbo:
   application:
-    name: api-gateway
-    logger: slf4j
-    qos-enable: false
+    name: api-gateway-consumer
   protocol:
-    name: tri
-    port: 50052
+    name: dubbo
+    port: -1
   registry:
-    address: nacos://${nacos.address:127.0.0.1}:8848
+    address: nacos://110.40.64.81:8848

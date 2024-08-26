@@ -4,7 +4,7 @@ spring:
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://117.72.79.165:3306/api_database
+    url: jdbc:mysql://110.40.64.81:3306/api_database
     username: suchjackroot
     password: root123
   mvc:
@@ -14,7 +14,10 @@ spring:
   session:
     timeout: 60
     store-type: none
-  # redis 配置
+  # nacos 配置
+  cloud:
+    nacos:
+      server-addr: 110.40.64.81:8848
 #  redis:
 #    port: 6379
 #    host: 117.72.79.165
@@ -51,14 +54,12 @@ such:
 #    id: nacos-registry
 #    address: nacos://localhost:8848
 
+# dubbo 配置
 dubbo:
   application:
-    name: api-backend
-    logger: slf4j
-#    qos-port: 33333
-    qos-enable: false
+    name: api-backend-provider
   protocol:
-    name: tri
-    port: 50052
+    name: dubbo
+    port: -1
   registry:
-    address: nacos://${nacos.address:117.72.79.165}:8848
+    address: nacos://110.40.64.81:8848

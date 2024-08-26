@@ -19,7 +19,7 @@ import static com.such.apiclientsdk.utils.SignUtils.genSign;
 
 public class SuchApiClient {
 
-    private static final String GATEWAY_HOST = "http://localhost:8090";
+    private static final String GATEWAY_HOST = "http://110.40.64.81:8090";
 
     private final String accessKey;
     private final String secretKey;
