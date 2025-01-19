@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class randomSoupByGet {
 
     @GetMapping("/random")
-    public String getRandomSoup(@RequestParam(value = "charset", required = false, defaultValue = "utf-8") String charset,
-                                @RequestParam(value = "encode", required = false, defaultValue = "text") String encode) {
+    public String getRandomSoup(@RequestParam(value = "encode", required = false, defaultValue = "text") String encode) {
         // 模拟随机鸡汤句子生成
         String[] soups = {
                 "生活总是充满了惊喜和挑战。",
@@ -24,6 +23,7 @@ public class randomSoupByGet {
                 "心有多大，舞台就有多大。"
         };
         int index = (int) (Math.random() * soups.length);
+
         return encode.equals("json") ? "{\"text\": \"" + soups[index] + "\"}" : soups[index];
     }
 }

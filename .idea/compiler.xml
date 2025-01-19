@@ -10,13 +10,11 @@
         <module name="api-project-microservice" />
         <module name="api-gateway" />
         <module name="api-common" />
+        <module name="api-client-sdk" />
         <module name="api-backend" />
         <module name="api-interface" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="api-client-sdk" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

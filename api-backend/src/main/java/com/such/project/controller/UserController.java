@@ -10,7 +10,6 @@ import com.such.project.common.BaseResponse;
 import com.such.project.common.DeleteRequest;
 import com.such.project.common.ErrorCode;
 import com.such.project.common.ResultUtils;
-import com.such.project.constant.UserConstant;
 import com.such.project.exception.BusinessException;
 import com.such.project.model.dto.user.*;
 import com.such.project.model.vo.UserVO;
@@ -39,13 +38,11 @@ public class UserController {
     @Resource
     private UserService userService;
 
-    // region 登录相关
-
     /**
      * 用户注册
      *
-     * @param userRegisterRequest
-     * @return
+     * @param userRegisterRequest 用户注册请求
+     * @return BaseResponse<Long>
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {

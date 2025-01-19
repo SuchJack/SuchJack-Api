@@ -7,6 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * 客户端配置
+ *
+ * @author SuchJack
+ */
 @Configuration
 @ConfigurationProperties("such.client")
 @Data

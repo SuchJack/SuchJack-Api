@@ -1,6 +1,5 @@
 package com.such.project.controller;
 
-import com.google.gson.Gson;
 import com.such.apiclientsdk.client.SuchApiClient;
 import com.such.apiclientsdk.model.Api;
 import com.such.apicommon.model.entity.InterfaceInfo;
@@ -14,11 +13,17 @@ import com.such.project.model.enums.InterfaceInfoStatusEnum;
 import com.such.project.service.InterfaceInfoService;
 import com.such.project.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 接口远程调用
+ */
 @RestController
 @RequestMapping("/invoke")
 @Slf4j
@@ -67,6 +72,9 @@ public class InvokeController {
         // 创建一个临时的SuchApiClient对象，并传入ak和sk
         SuchApiClient apiClient = new SuchApiClient(accessKey, secretKey);
 
+        if (invokeRequest.getUserRequestParams() == null) {
+            invokeRequest.setUserRequestParams("NULL_PARAM");
+        }
         // 测试调用，解析传递过来的值
         Api api = new Api();
         api.setId(loginUser.getId());

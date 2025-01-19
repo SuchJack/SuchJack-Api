@@ -3,7 +3,7 @@ package com.such.apiinterface.aop;
 import javax.annotation.Resource;
 
 /**
- * 调用次数切面
+ * 调用次数切面(伪代码)
  */
 public class InvokeCountAOP {
 

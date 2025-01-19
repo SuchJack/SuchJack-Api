@@ -51,6 +51,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 
     private static final String INTERFACE_HOST = "http://110.40.64.81:8123";
 
+    private static final String INTERFACE = "http://127.0.0.1:8123/v1";
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain ) {
         // 拿到请求、响应对象
@@ -60,7 +62,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 0. 用户发送请求到 API网关
         // 1. 请求日志
         String method = request.getMethod().toString();
-        String path = INTERFACE_HOST + request.getPath().value();
+//        String path = INTERFACE_HOST + request.getPath().value();
+        String path = INTERFACE;
         log.info("请求唯一标识：" + request.getId());
         log.info("请求路径：" + path);
         log.info("请求方法：" + method);
@@ -160,9 +163,9 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     /**
      * 处理响应(response装饰器)
      *
-     * @param exchange
-     * @param chain
-     * @return
+     * @param exchange 请求对象
+     * @param chain 请求链
+     * @return Mono<Void>
      */
     public Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain,long interfaceInfoId,long userId) {
         try {

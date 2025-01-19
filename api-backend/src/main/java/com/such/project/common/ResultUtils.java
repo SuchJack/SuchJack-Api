@@ -14,8 +14,8 @@ public class ResultUtils {
      * @param <T>
      * @return
      */
-    public static <T> com.such.project.common.BaseResponse<T> success(T data) {
-        return new com.such.project.common.BaseResponse<>(0, data, "ok");
+    public static <T> BaseResponse<T> success(T data) {
+        return new BaseResponse<>(0, data, "ok");
     }
 
     /**

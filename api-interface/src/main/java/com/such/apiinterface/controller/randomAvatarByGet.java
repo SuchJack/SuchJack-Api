@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class randomAvatarByGet {
 
     @GetMapping("/random")
-    public String getRandomAvatar(@RequestParam(value = "method", required = false, defaultValue = "pc") String method,
-                                  @RequestParam(value = "lx", required = false, defaultValue = "c1") String lx,
-                                  @RequestParam(value = "format", required = false, defaultValue = "json") String format) {
+    public String getRandomAvatar(@RequestParam(required = false)String format) {
         // 模拟随机头像URL生成
         String[] avatars = {
                 "https://randomuser.me/api/portraits/men/1.jpg",

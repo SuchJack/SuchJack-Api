@@ -11,7 +11,7 @@ spring:
           predicates:
             - Path=/**
     nacos:
-      server-addr: 110.40.64.81:8848
+      server-addr: 127.0.0.1:8848
   application:
     name: gateway
 logging:
@@ -28,4 +28,4 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://110.40.64.81:8848
+    address: nacos://127.0.0.1:8848

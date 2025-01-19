@@ -2,10 +2,9 @@ package com.such.apiclientsdk.model;
 
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * 请求API封装
+ *
  * @author SuchJack
  */
 @Data

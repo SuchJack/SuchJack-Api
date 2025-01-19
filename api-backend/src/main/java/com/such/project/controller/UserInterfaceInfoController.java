@@ -191,5 +191,4 @@ public class UserInterfaceInfoController {
         return ResultUtils.success(userUserInterfaceInfoList);
     }
 
-
 }

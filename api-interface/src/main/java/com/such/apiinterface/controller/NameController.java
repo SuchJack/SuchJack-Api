@@ -2,11 +2,14 @@ package com.such.apiinterface.controller;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.such.apiinterface.utils.RequireAllControllerMethodsUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 
 /**
@@ -27,6 +30,7 @@ public class NameController {
         if (speak == null || speak.equals("null")) {
             return "你玩我呢？你说话了吗？";
         }
+
         return "复读:【" + speak + "】...略略略！";
     }
 

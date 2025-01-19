@@ -1,6 +1,5 @@
 package com.such.project.controller;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.such.apicommon.model.entity.InterfaceInfo;
@@ -11,7 +10,6 @@ import com.such.project.common.ErrorCode;
 import com.such.project.common.ResultUtils;
 import com.such.project.constant.UserConstant;
 import com.such.project.exception.BusinessException;
-import com.such.project.mapper.InterfaceInfoMapper;
 import com.such.project.mapper.UserInterfaceInfoMapper;
 import com.such.project.model.vo.InterfaceInfoVO;
 import com.such.project.service.InterfaceInfoService;
@@ -27,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 分析控制器
+ * 接口统计
  */
 @RestController
 @RequestMapping("/analysis")

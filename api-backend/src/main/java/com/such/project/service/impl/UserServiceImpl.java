@@ -33,8 +33,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Resource
     private UserMapper userMapper;
 
-
-
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
