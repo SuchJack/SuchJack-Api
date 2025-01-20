@@ -14,6 +14,7 @@
           <option value="sign" />
           <option value="interfaceId" />
           <option value="body" />
+          <option value="url" />
         </set>
       </option>
     </inspection_tool>

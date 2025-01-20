@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
@@ -30,7 +34,7 @@ public class NameController {
         if (speak == null || speak.equals("null")) {
             return "你玩我呢？你说话了吗？";
         }
-
+        System.out.println("speak = " + speak);
         return "复读:【" + speak + "】...略略略！";
     }
 
@@ -47,15 +51,13 @@ public class NameController {
     /**
      * 获取用户名
      * @param body 前端传入的请求参数
-     * @param request 请求信息
      * @return 返回结果
      */
     @PostMapping("/user")
-    public String getUserNameByPost(@RequestBody(required = false) String body, HttpServletRequest request) {
+    public String getUserNameByPost(@RequestBody(required = false) String body ) {
         if (StringUtils.isEmpty(body)) {
             return "请求参数不能为空";
         }
-//        String body2 = request.getHeader("body"); //  !%7B%22username%22%3A%22%E4%BD%A0%22%7D 乱码！
         String result;
         try {
             JSONObject jsonObject = JSONUtil.parseObj(body);
@@ -68,7 +70,6 @@ public class NameController {
             log.error("请求参数名称错误");
             return "请求参数名称错误";
         }
-
         return "成功发送POST请求! 你的名字是:【" + result + "】!";
     }
 
