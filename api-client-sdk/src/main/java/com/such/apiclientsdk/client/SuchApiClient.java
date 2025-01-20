@@ -1,6 +1,7 @@
 package com.such.apiclientsdk.client;
 
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONUtil;
 import com.such.apiclientsdk.model.Api;
@@ -19,11 +20,9 @@ import static com.such.apiclientsdk.utils.SignUtils.genSign;
  */
 public class SuchApiClient {
 
-//    private static final String GATEWAY_HOST = "http://localhost:8090";
-
     private static final String GATEWAY_HOST = "http://localhost:8090/api/v1"; // 网关地址
 
-//    private final Integer appId;
+//    private final Integer appId; // 区分业务线
     private final String accessKey;
     private final String secretKey;
 
@@ -70,6 +69,7 @@ public class SuchApiClient {
         // 注意：不能直接发送密钥
 //        hashmap.put("secretKey",secretKey);
         hashmap.put("nonce", RandomUtil.randomNumbers(4)); // 参数2 随机数
+//        String encodedBody = SecureUtil.md5(body);  // TODO 内容是否需要加密？
         hashmap.put("body", URLEncoder.encode(body, StandardCharsets.UTF_8)); // 参数3 请求内容 -> 参数传入!
         hashmap.put("timestamp", String.valueOf(System.currentTimeMillis() / 1000)); // 参数4 时间戳
         hashmap.put("sign", genSign(body, secretKey)); // 参数5 签名密钥
