@@ -64,6 +64,7 @@ public class SuchApiClient {
      */
     private Map<String, String> getHeadersMap(String body,String interfaceId,String url) {
         Map<String, String> hashmap = new HashMap<>();
+        // userId、userAccount ???
         hashmap.put("accessKey", accessKey); // 参数1 accessKey
         // 将 "secretKey" 和其对应的值放入 map 中
         // 注意：不能直接发送密钥
