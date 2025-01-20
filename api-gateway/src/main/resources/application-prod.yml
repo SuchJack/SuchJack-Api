@@ -3,6 +3,7 @@ server:
 spring:
   cloud:
     gateway:
+      enabled: true
       default-filters:
         - AddResponseHeader=source, jack
       routes:

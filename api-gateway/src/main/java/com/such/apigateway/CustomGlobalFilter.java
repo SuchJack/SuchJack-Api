@@ -1,6 +1,7 @@
 package com.such.apigateway;
 
 
+import cn.hutool.core.text.AntPathMatcher;
 import com.such.apicommon.model.entity.InterfaceInfo;
 import com.such.apicommon.model.entity.User;
 import com.such.apicommon.service.InnerInterfaceInfoService;
@@ -31,10 +32,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.such.apiclientsdk.utils.SignUtils.genSign;
+import static com.such.utils.NetUtils.getIp;
+
 /**
- * 全局过滤
+ * 全局请求拦截过滤
+ * 设计思路：
+ *
  */
 @Component
 @Slf4j
@@ -47,30 +53,33 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     @DubboReference
     private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
 
+    // 不需要登录可以访问
+    private static final List<String> PATH_WHITE_LIST = Arrays.asList("/api/apiclient", "/api/user/**");
+
+    //需要登录才能进行访问
+    private static final List<String> PATH_LOGIN_LIST = Arrays.asList("/api/userInterfaceInfo/**", "/api/interfaceInfo/**", "/api/auth/**", "/api/oauth/**", "/api/order/**", "/api/alipay/**");
+
     private static final List<String> IP_WHITE_LIST = Arrays.asList("127.0.0.1");
 
-    private static final String INTERFACE_HOST = "http://110.40.64.81:8123";
-
-    private static final String INTERFACE = "http://127.0.0.1:8123/v1";
-
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain ) {
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         // 拿到请求、响应对象
         ServerHttpRequest request = exchange.getRequest();
         ServerHttpResponse response = exchange.getResponse();
+        String path = request.getPath().toString();
 
         // 0. 用户发送请求到 API网关
-        // 1. 请求日志
-        String method = request.getMethod().toString();
-//        String path = INTERFACE_HOST + request.getPath().value();
-        String path = INTERFACE;
-        log.info("请求唯一标识：" + request.getId());
-        log.info("请求路径：" + path);
-        log.info("请求方法：" + method);
-        log.info("请求参数：" + request.getQueryParams());
-        String sourceAddress = request.getLocalAddress().getHostString();
-        log.info("请求来源地址：" + sourceAddress);
-        log.info("请求来源地址：" + request.getRemoteAddress());
+        // 1. 打印请求日志
+        logPrint(request);
+
+        //查询用户是否登录时、用户登录等请求，直接放行
+        List<Boolean> collect = PATH_WHITE_LIST.stream().map(item -> {
+            AntPathMatcher antPathMatcher = new AntPathMatcher();
+            return antPathMatcher.match(item, path);
+        }).toList();
+        if (collect.contains(true)) {
+            return chain.filter(exchange);
+        }
 
         // 2. 访问控制 - 黑白名单 // todo 暂时不做测试一下，留到最后阶段使用数据库+redis实现
 //        if (!IP_WHITE_LIST.contains(sourceAddress)) {
@@ -93,8 +102,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         User invokeUser = null;
         try {
             invokeUser = innerUserService.getInvokeUser(accessKey);
-        }catch (Exception e){
-            log.error("getInvokeUser error",e);
+        } catch (Exception e) {
+            log.error("getInvokeUser error", e);
         }
         if (invokeUser == null) {
             return handleNoAuth(response);
@@ -135,11 +144,11 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 初始化一个 InterfaceInfo 对象，用于存储查询结果
         InterfaceInfo interfaceInfo = null;
         try {
-            interfaceInfo =  innerInterfaceInfoService.getInterfaceInfo(interfaceId);
-        } catch (Exception e){
-            log.error("getInterfaceInfo error",e);
+            interfaceInfo = innerInterfaceInfoService.getInterfaceInfo(interfaceId);
+        } catch (Exception e) {
+            log.error("getInterfaceInfo error", e);
         }
-        if (interfaceInfo == null){
+        if (interfaceInfo == null) {
             return handleNoAuth(response);
         }
 
@@ -148,7 +157,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         // 调用成功之后要输入一个响应日志
 //        log.info("响应：" + response.getStatusCode());
         // 6. 响应日志
-        return handleResponse(exchange, chain,interfaceInfo.getId(),invokeUser.getId());
+        return handleResponse(exchange, chain, interfaceInfo.getId(), invokeUser.getId());
         // 7. todo 调用成功，接口调用次数 + 1
 //        if (response.getStatusCode() == HttpStatus.OK){
 //
@@ -160,6 +169,24 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
 //        return filter;
     }
 
+    @Override
+    public int getOrder() {
+        return -1;
+    }
+
+    private void logPrint(ServerHttpRequest request) {
+        log.info("=====  {} 请求开始 =====", request.getId());
+        log.info("请求路径：" + request.getPath());
+        log.info("请求方法：" + request.getMethod());
+        log.info("请求参数：" + request.getQueryParams());
+        String sourceAddress = request.getLocalAddress().getHostString();
+        log.info("请求来源地址：" + sourceAddress);
+        log.info("网关本地地址：" + request.getLocalAddress());
+        log.info("请求远程地址：" + request.getRemoteAddress());
+        log.info("接口请求IP：" + getIp(request));
+        log.info("url:" + request.getURI());
+    }
+
     /**
      * 处理响应(response装饰器)
      *
@@ -167,52 +194,56 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
      * @param chain 请求链
      * @return Mono<Void>
      */
-    public Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain,long interfaceInfoId,long userId) {
+    private Mono<Void> handleResponse(ServerWebExchange exchange, GatewayFilterChain chain, long interfaceInfoId, long userId) {
+        ServerHttpRequest request = exchange.getRequest();
         try {
             // 获取原始的响应对象
             ServerHttpResponse originalResponse = exchange.getResponse();
             // 获取数据缓冲工厂
             DataBufferFactory bufferFactory = originalResponse.bufferFactory();
             // 获取响应的状态码
-            HttpStatus statusCode = (HttpStatus) originalResponse.getStatusCode();
-
+            HttpStatus statusCode = originalResponse.getStatusCode();
             // 判断状态码是否为200 OK(按道理来说们现在没有调用，是拿不到响应码的，对这个保持质疑...)
             if (statusCode == HttpStatus.OK) {
+                // 装饰，增强能力
                 ServerHttpResponseDecorator decoratedResponse = new ServerHttpResponseDecorator(originalResponse) {
                     // 重写writeWith方法，用于处理响应体的数据
-                    // 这段方法就是只要当我们的模拟接口调用完成之后，等它返回结果，
+                    // 这段方法就是只要当我们的模拟接口"调用完成之后"，等它返回结果，
                     // 就会调用writeWith方法，我们就能根据响应结果做一些自己的处理
                     @Override
                     public Mono<Void> writeWith(Publisher<? extends DataBuffer> body) {
-                        //log.info("body instanceof Flux: {}", (body instanceof Flux));
+                        log.info("body instanceof Flux: {}", (body instanceof Flux));
                         // 判断响应体是否是Flux类型
                         if (body instanceof Flux) {
                             Flux<? extends DataBuffer> fluxBody = Flux.from(body);
-                            // 返回一个处理后的响应体
+                            // 往返回值里写数据，返回一个处理后的响应体
                             // (这里就理解为它在拼接字符串，它把缓冲区的数据取出来，一点一点拼接好)
-                            return super.writeWith(fluxBody.map(dataBuffer -> {
-                                // 读取响应体的内容并转换为字节数组
-                                // 7. 调用成功，接口调用次数 + 1
-                                try{
-                                    innerUserInterfaceInfoService.invokeCount(interfaceInfoId,userId);
-                                } catch (Exception e){
-                                    log.error("invokeCount error",e);
-                                }
-                                byte[] content = new byte[dataBuffer.readableByteCount()];
-                                dataBuffer.read(content);
-                                DataBufferUtils.release(dataBuffer);//释放掉内存
-                                // 构建日志
-                                StringBuilder sb2 = new StringBuilder(200);
-                                List<Object> rspArgs = new ArrayList<>();
-                                rspArgs.add(originalResponse.getStatusCode());
-                                //rspArgs.add(requestUrl);
-                                String data = new String(content, StandardCharsets.UTF_8);//data
-                                sb2.append(data);
-                                // 6. 打印日志
-                                log.info("响应结果：" + data);
-                                // 将处理后的内容重新包装成DataBuffer并返回
-                                return bufferFactory.wrap(content);
-                            }));
+                            return super.writeWith(
+                                    fluxBody.map(dataBuffer -> {
+                                        // 读取响应体的内容并转换为字节数组
+                                        // 7. 调用成功，接口调用次数 + 1
+                                        try {
+                                            boolean b = innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
+                                            log.info("<-------修改接口调用次数：{}", b ? "成功" : "失败");
+                                        } catch (Exception e) {
+                                            log.error("invokeCount error", e);
+                                        }
+                                        byte[] content = new byte[dataBuffer.readableByteCount()];
+                                        dataBuffer.read(content);
+                                        DataBufferUtils.release(dataBuffer);//释放掉内存
+                                        // 构建日志
+                                        StringBuilder sb2 = new StringBuilder(200);
+                                        List<Object> rspArgs = new ArrayList<>();
+                                        rspArgs.add(originalResponse.getStatusCode());
+                                        //rspArgs.add(requestUrl);
+                                        String data = new String(content, StandardCharsets.UTF_8);//data
+                                        sb2.append(data);
+                                        // 6. 打印日志
+                                        log.info("响应结果：" + data);
+                                        log.info("=====  {} 结束 =====", request.getId());
+                                        // 将处理后的内容重新包装成DataBuffer并返回
+                                        return bufferFactory.wrap(content);
+                                    }));
                         } else {
                             // 8. 调用失败，返回一个规范的错误码
                             log.error("<--- {} 响应code异常", getStatusCode());
@@ -224,16 +255,13 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                 return chain.filter(exchange.mutate().response(decoratedResponse).build());
             }
             // 对于非200 OK的请求,直接返回,进行降级处理
+            log.info("=====  {} 结束 =====", request.getId());
             return chain.filter(exchange);//降级处理返回数据
         } catch (Exception e) {
             log.error("网关处理响应异常" + e);
+            log.info("=====  {} 结束 =====", request.getId());
             return chain.filter(exchange);
         }
-    }
-
-    @Override
-    public int getOrder() {
-        return -1;
     }
 
     public Mono<Void> handleNoAuth(ServerHttpResponse response) {
