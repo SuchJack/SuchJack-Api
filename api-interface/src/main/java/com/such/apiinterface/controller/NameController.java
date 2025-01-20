@@ -34,7 +34,6 @@ public class NameController {
         if (speak == null || speak.equals("null")) {
             return "你玩我呢？你说话了吗？";
         }
-        System.out.println("speak = " + speak);
         return "复读:【" + speak + "】...略略略！";
     }
 
