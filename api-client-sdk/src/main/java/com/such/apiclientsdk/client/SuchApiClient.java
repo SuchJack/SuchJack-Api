@@ -44,14 +44,16 @@ public class SuchApiClient {
                     .addHeaders(getHeadersMap(json,api.getInterfaceId(),api.getUrl()))
                     .charset("UTF-8")
                     .body(json)
-                    .execute().body();
+                    .execute()
+                    .body();
         } else {
             return HttpRequest.post(GATEWAY_HOST)
                     .header("Accept","application/json;charset=UTF-8")
                     .addHeaders(getHeadersMap(json,api.getInterfaceId(),api.getUrl()))
                     .charset("UTF-8")
                     .body(json)
-                    .execute().body();
+                    .execute()
+                    .body();
         }
     }
 
