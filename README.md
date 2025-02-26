@@ -3,6 +3,21 @@
 > 项目上线地址：https://api.such-jack.top/
 > 演示账号：test001 密码12345678
 
+### 技术栈
+1. 前端：
+- React 18
+- Ant Design Pro 5.x 脚手架 + Ant Design & Procomponents 组件库
+- Umi 4 前端框架
+- OpenApi代码生成
+2. 后端：
+- Java、SpringBoot2.7.x
+- MySQL 数据库 + MyBatis-Plus 及 MyBatis X 自动生成
+- API 签名认证（Http 调用）
+- Spring Boot Starter（SDK 开发）
+- Dubbo 分布式（RPC、Nacos）
+- Swagger + Knife4j 接口文档生成
+- Spring Cloud Gateway 微服务网关
+- Hutool、Apache Common Utils、Gson 等工具库
 
 
 ### 项目模块介绍
@@ -23,7 +38,13 @@
    - 提供一个简化的工具包，使得开发者可以更方便地调用接口，例如提供预封装的 HTTP 请求方法、接口调用示例等。
 
 
+### 部署步骤
 
+1. 克隆一份代码
+
+2. 复制一份application.yml为application-local.yml
+
+3. 修改application-local.yml的配置为你的配置
 
 
 ### 版本更新
@@ -60,6 +81,13 @@
 
 优化请求：区分GET、POST请求的调用，分别走不同的方法调用。
 
+
+// TODO LIST
+1. 接口设计：需要设计清晰易用的 API 接口，并且提供详细的接口文档，以方便开发者使用。
+2. 性能和可用性：平台需要承载大量的接口请求，因此需要考虑到性能和可用性问题。例如，设计高效的数据存储和检索策略，确保 API 网关的高性能等。
+3. 安全：平台需要防止各种安全攻击，例如 DDOS 攻击，也需要保护用户的隐私和数据安全。
+4. 计费和流量控制：需要设计合理的计费策略和流量控制机制，以确保平台的稳定运行和收入来源。
+5. 易用性和用户体验：需要为开发者提供简单易用的接口调用工具和友好的用户界面，提供优质的用户体验。
 
 
 > 参考资料：
