@@ -12,40 +12,15 @@ spring:
           predicates:
             - Path=/api/**
     nacos:
-      server-addr: 110.40.64.81:8848
+      server-addr: localhost:8848
   application:
-    name: gateway
-#        - id: add_request_header_route
-#          uri: http://localhost:8123
-#          predicates:
-#            - Path=/api/**
-#          filters:
-#            - AddRequestHeader=yupi, swag
-#            - AddRequestParameter=name, dog
-#            - name: CircuitBreaker
-#              args:
-#                name: myCircuitBreaker
-#                fallbackUri: forward:/fallback
-#        - id: yupi-fallback
-#          uri: https://yupi.icu
-#          predicates:
-#            - Path=/fallback
+    name: api-gateway-consumer
 logging:
   level:
     org:
       springframework:
         cloud:
           gateway: trace
-
-#dubbo:
-#  application:
-#    name: dubbo-springboot-demo-consumer
-#  protocol:
-#    name: dubbo
-#    port: 22223
-#  registry:
-#    id: nacos-registry
-#    address: nacos://localhost:8848
 # dubbo 配置
 dubbo:
   application:
@@ -54,4 +29,4 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://110.40.64.81:8848
+    address: nacos://localhost:8848
