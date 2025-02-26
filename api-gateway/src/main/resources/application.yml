@@ -1,8 +1,8 @@
 server:
   port: 8090
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   cloud:
     gateway:
       default-filters:
@@ -16,12 +16,10 @@ spring:
       server-addr: 127.0.0.1:8848
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d
       config:
         server-addr: 127.0.0.1:8848
-        namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d
   application:
-    name: gateway
+    name: api-gateway-consumer
 logging:
   level:
     org:
@@ -37,4 +35,3 @@ dubbo:
     port: -1
   registry:
     address: nacos://127.0.0.1:8848
-    namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d

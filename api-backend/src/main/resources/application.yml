@@ -1,8 +1,8 @@
 spring:
-#  profiles:
-#    active: local
+  profiles:
+    active: local
   application:
-    name: api-backend
+    name: api-backend-provider
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -27,10 +27,8 @@ spring:
       server-addr: 127.0.0.1:8848
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d
       config:
         server-addr: 127.0.0.1:8848
-        namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d
 server:
   port: 7589
   servlet:
@@ -58,6 +56,5 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    # 配置注册中心为 Nacos，使用的地址是 nacos://localhost:8848
+    # 配置注册中心为 Nacos
     address: nacos://127.0.0.1:8848
-    namespace: dbeda1fb-9f47-4745-a1c5-9eae8e97cb4d
