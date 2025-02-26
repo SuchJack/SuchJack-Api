@@ -2,6 +2,7 @@ package com.such.apiinterface.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/praise")
 public class randomComplimentByGet {
     @GetMapping("/random")
-    public String getRandomCompliment() {
+    public String getRandomCompliment(@RequestParam(required = false)String format) {
         String[] compliments = {
                 "你的笑容是世界上最美的风景。",
                 "你是人群中最闪亮的星星。",
