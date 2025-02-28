@@ -1,4 +1,3 @@
-
 # API开放平台后端
 > 项目上线地址：https://api.such-jack.top/
 > 演示账号：test001 密码12345678
@@ -42,6 +41,12 @@
 5. api-client-sdk：第三方调用 SDK 系统
    - 提供一个简化的工具包，使得开发者可以更方便地调用接口，例如提供预封装的 HTTP 请求方法、接口调用示例等。
 
+---
+### 结构图
+
+![image](https://github.com/user-attachments/assets/f5116952-1613-468f-a5bd-3a312d1dc43e)
+
+ 
 ---
 ### 部署步骤
 
