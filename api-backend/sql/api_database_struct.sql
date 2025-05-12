@@ -4,7 +4,6 @@
  Source Server         : SuchApi - 5.7
  Source Server Type    : MySQL
  Source Server Version : 50744 (5.7.44-log)
- Source Host           : 110.40.64.81:13350
  Source Schema         : api_database
 
  Target Server Type    : MySQL
