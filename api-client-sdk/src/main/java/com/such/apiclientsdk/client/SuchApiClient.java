@@ -20,7 +20,7 @@ import static com.such.apiclientsdk.utils.SignUtils.genSign;
  */
 public class SuchApiClient {
 
-    private static final String GATEWAY_HOST = "https://gateway.such-jack.top/api/v1"; // 网关地址
+    private static final String GATEWAY_HOST = "https://api-gateway.such-jack.top/api/v1"; // 网关地址
 
 //    private final Integer appId; // 区分业务线
     private final String accessKey;
